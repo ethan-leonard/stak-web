@@ -31,6 +31,16 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
     
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VCJFZ1M43W"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VCJFZ1M43W');
+    </script>
+    
     <!-- Preload SF Pro font -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"></noscript>
@@ -420,7 +430,7 @@
           redesigning the fitness app experience. build your stak.
         </h1>
         
-        <form class="cta-form" aria-label="Join waitlist">
+        <form class="cta-form" action="https://formspree.io/f/xdkgrqqj" method="POST" aria-label="Join waitlist">
           <label for="email" class="sr-only">Email address</label>
           <input 
             type="email" 
@@ -475,36 +485,47 @@
       }
     </style>
     
-    <!-- Basic form handling script -->
+    <!-- Formspree form handling script -->
     <script>
       document.querySelector('.cta-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
         const email = document.getElementById('email').value;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         
-        if (emailRegex.test(email)) {
-          // Hide error, show success
-          document.querySelector('.error-message').style.display = 'none';
-          document.querySelector('.success-message').style.display = 'block';
-          
-          // Reset form
-          setTimeout(() => {
-            document.getElementById('email').value = '';
-            document.querySelector('.success-message').style.display = 'none';
-          }, 3000);
-          
-          // Here you would typically send the email to your backend
-          console.log('Email submitted:', email);
-        } else {
-          // Show error
+        if (!emailRegex.test(email)) {
+          e.preventDefault();
+          // Show error for invalid email
           document.querySelector('.success-message').style.display = 'none';
           document.querySelector('.error-message').style.display = 'block';
           
           setTimeout(() => {
             document.querySelector('.error-message').style.display = 'none';
           }, 3000);
+          return;
         }
+        
+        // For valid emails, let the form submit to Formspree
+        // Show a temporary "submitting" state
+        const button = document.querySelector('.cta-button');
+        const originalText = button.textContent;
+        button.textContent = 'submitting...';
+        button.disabled = true;
+        
+        // Handle the response after submission
+        setTimeout(() => {
+          // Show success message
+          document.querySelector('.error-message').style.display = 'none';
+          document.querySelector('.success-message').style.display = 'block';
+          
+          // Reset form and button
+          document.getElementById('email').value = '';
+          button.textContent = originalText;
+          button.disabled = false;
+          
+          // Hide success message after 5 seconds
+          setTimeout(() => {
+            document.querySelector('.success-message').style.display = 'none';
+          }, 5000);
+        }, 1000);
       });
       
       // Analytics/tracking placeholder
