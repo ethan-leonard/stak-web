@@ -641,58 +641,85 @@
           return;
         }
 
-                 // --- Synchronized Cube + Arm Hover Animations ---
-         const cubeOrange = document.getElementById('cube-orange');
-         const armOrange = document.getElementById('arm-orange');
-         const cubeBlue = document.getElementById('cube-blue');
-         const armBlue = document.getElementById('arm-blue');
-         const cubePink = document.getElementById('cube-pink');
-         const armPink = document.getElementById('arm-pink');
+        // --- Startup Animations (play once on load) ---
+        const startupTl = gsap.timeline({ delay: 1.2 }); // Start after hero elements fade in
+        
+        // Orange cube startup animation (dumbbell press)
+        startupTl.to('#cube-orange', { duration: 0.5, y: -5, rotation: -3, ease: "sine.out" }, 0)
+                 .to('#cube-orange', { duration: 0.4, y: 0, rotation: 0, ease: "sine.in" }, "+=0.2")
+                 .to('#arm-orange', { duration: 0.8, rotation: -25, transformOrigin: "top left", ease: "sine.inOut" }, 0)
+                 .to('#arm-orange', { duration: 0.6, rotation: 0, ease: "sine.in" }, "+=0.1");
+        
+        // Blue cube startup animation (running motion) - starts 0.3s after orange
+        startupTl.to(['#cube-blue', '#arm-blue'], { duration: 0.4, x: -3, ease: "sine.out" }, 0.3)
+                 .to(['#cube-blue', '#arm-blue'], { duration: 0.4, x: 3, ease: "sine.inOut" }, ">")
+                 .to(['#cube-blue', '#arm-blue'], { duration: 0.4, x: 0, ease: "sine.in" }, ">")
+                 .to('#arm-blue', { duration: 0.2, rotation: -8, transformOrigin: "right center", ease: "sine.out" }, 0.4)
+                 .to('#arm-blue', { duration: 0.2, rotation: 8, transformOrigin: "right center", ease: "sine.inOut" }, ">")
+                 .to('#arm-blue', { duration: 0.2, rotation: -5, transformOrigin: "right center", ease: "sine.inOut" }, ">")
+                 .to('#arm-blue', { duration: 0.2, rotation: 5, transformOrigin: "right center", ease: "sine.inOut" }, ">")
+                 .to('#arm-blue', { duration: 0.2, rotation: 0, transformOrigin: "right center", ease: "sine.in" }, ">");
+        
+        // Pink cube startup animation (jumping + cheering) - starts 0.6s after orange
+        startupTl.to(['#cube-pink', '#arm-pink'], { duration: 0.3, y: -4, ease: "sine.out" }, 0.6)
+                 .to(['#cube-pink', '#arm-pink'], { duration: 0.5, y: 0, ease: "bounce.out" }, ">")
+                 .to('#arm-pink', { duration: 0.2, rotation: -12, transformOrigin: "bottom center", ease: "sine.inOut" }, 0.7)
+                 .to('#arm-pink', { duration: 0.2, rotation: 12, transformOrigin: "bottom center", ease: "sine.inOut" }, ">")
+                 .to('#arm-pink', { duration: 0.2, rotation: -8, transformOrigin: "bottom center", ease: "sine.inOut" }, ">")
+                 .to('#arm-pink', { duration: 0.2, rotation: 0, transformOrigin: "bottom center", ease: "sine.in" }, ">");
 
-         // Orange Cube + Arm: Dumbbell Press + Bicep Flex
-         if (cubeOrange && armOrange) {
-           const orangeHoverTl = gsap.timeline({ paused: true });
-           // Cube movement
-           orangeHoverTl.to(cubeOrange, { duration: 0.5, y: -5, rotation: -3, ease: "sine.out" }, 0)
-                        .to(cubeOrange, { duration: 0.4, y: 0, rotation: 0, ease: "sine.in" }, "+=0.2");
-           // Arm movement (independent - just flex in place)
-           orangeHoverTl.to(armOrange, { duration: 0.8, rotation: -25, transformOrigin: "top left", ease: "sine.inOut" }, 0)
-                        .to(armOrange, { duration: 0.6, rotation: 0, ease: "sine.in" }, "+=0.1");
-           
-           cubeOrange.addEventListener('mouseenter', () => !prefersReducedMotion && orangeHoverTl.restart());
-         }
+        // --- Synchronized Cube + Arm Hover Animations ---
+        const cubeOrange = document.getElementById('cube-orange');
+        const armOrange = document.getElementById('arm-orange');
+        const cubeBlue = document.getElementById('cube-blue');
+        const armBlue = document.getElementById('arm-blue');
+        const cubePink = document.getElementById('cube-pink');
+        const armPink = document.getElementById('arm-pink');
 
-         // Blue Cube + Arm: Running Motion (synchronized movement)
-         if (cubeBlue && armBlue) {
-           const blueHoverTl = gsap.timeline({ paused: true });
-           // Cube and arm base movement (stay attached)
-           blueHoverTl.to([cubeBlue, armBlue], { duration: 0.4, x: -3, ease: "sine.out" }, 0)
-                      .to([cubeBlue, armBlue], { duration: 0.4, x: 3, ease: "sine.inOut" }, ">")
-                      .to([cubeBlue, armBlue], { duration: 0.4, x: 0, ease: "sine.in" }, ">");
-           // Additional running motion for arm only (left endpoint movement)
-           blueHoverTl.to(armBlue, { duration: 0.2, rotation: -8, transformOrigin: "right center", ease: "sine.out" }, 0.1)
-                      .to(armBlue, { duration: 0.2, rotation: 8, transformOrigin: "right center", ease: "sine.inOut" }, ">")
-                      .to(armBlue, { duration: 0.2, rotation: -5, transformOrigin: "right center", ease: "sine.inOut" }, ">")
-                      .to(armBlue, { duration: 0.2, rotation: 5, transformOrigin: "right center", ease: "sine.inOut" }, ">")
-                      .to(armBlue, { duration: 0.2, rotation: 0, transformOrigin: "right center", ease: "sine.in" }, ">");
+        // Orange Cube + Arm: Dumbbell Press + Bicep Flex
+        if (cubeOrange && armOrange) {
+          const orangeHoverTl = gsap.timeline({ paused: true });
+          // Cube movement
+          orangeHoverTl.to(cubeOrange, { duration: 0.5, y: -5, rotation: -3, ease: "sine.out" }, 0)
+                       .to(cubeOrange, { duration: 0.4, y: 0, rotation: 0, ease: "sine.in" }, "+=0.2");
+          // Arm movement (independent - just flex in place)
+          orangeHoverTl.to(armOrange, { duration: 0.8, rotation: -25, transformOrigin: "top left", ease: "sine.inOut" }, 0)
+                       .to(armOrange, { duration: 0.6, rotation: 0, ease: "sine.in" }, "+=0.1");
+          
+          cubeOrange.addEventListener('mouseenter', () => !prefersReducedMotion && orangeHoverTl.restart());
+        }
 
-           cubeBlue.addEventListener('mouseenter', () => !prefersReducedMotion && blueHoverTl.restart());
-         }
+        // Blue Cube + Arm: Running Motion (synchronized movement)
+        if (cubeBlue && armBlue) {
+          const blueHoverTl = gsap.timeline({ paused: true });
+          // Cube and arm base movement (stay attached)
+          blueHoverTl.to([cubeBlue, armBlue], { duration: 0.4, x: -3, ease: "sine.out" }, 0)
+                     .to([cubeBlue, armBlue], { duration: 0.4, x: 3, ease: "sine.inOut" }, ">")
+                     .to([cubeBlue, armBlue], { duration: 0.4, x: 0, ease: "sine.in" }, ">");
+          // Additional running motion for arm only (left endpoint movement)
+          blueHoverTl.to(armBlue, { duration: 0.2, rotation: -8, transformOrigin: "right center", ease: "sine.out" }, 0.1)
+                     .to(armBlue, { duration: 0.2, rotation: 8, transformOrigin: "right center", ease: "sine.inOut" }, ">")
+                     .to(armBlue, { duration: 0.2, rotation: -5, transformOrigin: "right center", ease: "sine.inOut" }, ">")
+                     .to(armBlue, { duration: 0.2, rotation: 5, transformOrigin: "right center", ease: "sine.inOut" }, ">")
+                     .to(armBlue, { duration: 0.2, rotation: 0, transformOrigin: "right center", ease: "sine.in" }, ">");
 
-         // Pink Cube + Arm: Jumping + Cheering
-         if (cubePink && armPink) {
-           const pinkHoverTl = gsap.timeline({ paused: true });
-           // Cube and arm jump together
-           pinkHoverTl.to([cubePink, armPink], { duration: 0.3, y: -4, ease: "sine.out" }, 0)
-                      .to([cubePink, armPink], { duration: 0.5, y: 0, ease: "bounce.out" }, ">");
-           // Add cheering motion to arm only (top portion waves, bottom stays put)
-           pinkHoverTl.to(armPink, { duration: 0.2, rotation: -12, transformOrigin: "bottom center", ease: "sine.inOut" }, 0.1)
-                      .to(armPink, { duration: 0.2, rotation: 12, transformOrigin: "bottom center", ease: "sine.inOut" }, ">")
-                      .to(armPink, { duration: 0.2, rotation: -8, transformOrigin: "bottom center", ease: "sine.inOut" }, ">")
-                      .to(armPink, { duration: 0.2, rotation: 0, transformOrigin: "bottom center", ease: "sine.in" }, ">");
+          cubeBlue.addEventListener('mouseenter', () => !prefersReducedMotion && blueHoverTl.restart());
+        }
 
-           cubePink.addEventListener('mouseenter', () => !prefersReducedMotion && pinkHoverTl.restart());
-         }
+        // Pink Cube + Arm: Jumping + Cheering
+        if (cubePink && armPink) {
+          const pinkHoverTl = gsap.timeline({ paused: true });
+          // Cube and arm jump together
+          pinkHoverTl.to([cubePink, armPink], { duration: 0.3, y: -4, ease: "sine.out" }, 0)
+                     .to([cubePink, armPink], { duration: 0.5, y: 0, ease: "bounce.out" }, ">");
+          // Add cheering motion to arm only (top portion waves, bottom stays put)
+          pinkHoverTl.to(armPink, { duration: 0.2, rotation: -12, transformOrigin: "bottom center", ease: "sine.inOut" }, 0.1)
+                     .to(armPink, { duration: 0.2, rotation: 12, transformOrigin: "bottom center", ease: "sine.inOut" }, ">")
+                     .to(armPink, { duration: 0.2, rotation: -8, transformOrigin: "bottom center", ease: "sine.inOut" }, ">")
+                     .to(armPink, { duration: 0.2, rotation: 0, transformOrigin: "bottom center", ease: "sine.in" }, ">");
+
+          cubePink.addEventListener('mouseenter', () => !prefersReducedMotion && pinkHoverTl.restart());
+        }
       });
     </script>
   </body>
